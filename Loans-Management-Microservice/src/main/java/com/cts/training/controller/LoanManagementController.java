@@ -6,15 +6,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.extern.slf4j.Slf4j;
+
 import com.cts.training.exception.CustomerLoanNotFoundException;
 import com.cts.training.exception.LoanNotFoundException;
 import com.cts.training.feign.AuthorisationClient;
 import com.cts.training.model.CustomerLoan;
+import com.cts.training.model.LoanApplication;
 import com.cts.training.pojo.CashDeposit;
 import com.cts.training.pojo.RealEstate;
 import com.cts.training.service.LoanManagementService;
@@ -25,6 +29,7 @@ import com.cts.training.service.LoanManagementService;
  * @ResquestMapping /loan-management
  */
 @RestController
+@Slf4j
 @RequestMapping(value = "/loan-management")
 public class LoanManagementController {
 
@@ -98,4 +103,31 @@ public class LoanManagementController {
 			return new ResponseEntity<>("Invalid token", HttpStatus.FORBIDDEN);
 		}
 	}
+
+
+	@GetMapping("/getLoanApplicationStatus/{applicationId}")
+	public ResponseEntity<LoanApplication> getLoanApplicationStatus(@RequestHeader(name="Authorization") String token, @PathVariable Integer applicationId) throws LoanNotFoundException
+	{
+		ResponseEntity<LoanApplication> loanApplication  = loanService.getLoanApplicationStatus(applicationId);
+		log.info("works");
+		return loanApplication;
+	}
+
+	@PostMapping("/applyLoan")
+	public ResponseEntity<String> applyLoan(@RequestHeader(name = "Authorization") String token , @RequestBody LoanApplication loanApplication)
+	{
+		return loanService.addLoanApplication(loanApplication);
+	}
+	@PutMapping("/approveLoanApplication/{applicationId}")
+	public ResponseEntity<String> approveLoanApplication(@RequestHeader(name="Authorization") String token, @PathVariable Integer applicationId) throws LoanNotFoundException
+	{
+		 return loanService.approveLoanApplication(applicationId);
+	}
+	
+	
+	 @PutMapping("/rejectLoanApplication/{id}")
+	public ResponseEntity<String> rejectLoanApplication(@RequestHeader(name="Authorization") String token, @PathVariable Integer id) throws LoanNotFoundException{
+		return loanService.rejectLoanApplication(id);
+	} 
+	
 }

@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import com.cts.training.exception.CustomerLoanNotFoundException;
 import com.cts.training.exception.LoanNotFoundException;
 import com.cts.training.model.CustomerLoan;
+import com.cts.training.model.LoanApplication;
 import com.cts.training.pojo.CashDeposit;
 import com.cts.training.pojo.RealEstate;
 
@@ -41,4 +42,13 @@ public interface LoanManagementService {
 	 */
 	public ResponseEntity<String> saveCashDeposit(String token, CashDeposit cashDeposit)
 			throws CustomerLoanNotFoundException, LoanNotFoundException;
+
+	public ResponseEntity<LoanApplication> getLoanApplicationStatus(Integer applicationId)
+			throws LoanNotFoundException;
+
+	public ResponseEntity<String> addLoanApplication(LoanApplication loanApplication);
+	
+	public ResponseEntity<String> approveLoanApplication(Integer applicationId) throws LoanNotFoundException;
+	
+	public ResponseEntity<String> rejectLoanApplication(Integer applicationId) throws LoanNotFoundException;
 }

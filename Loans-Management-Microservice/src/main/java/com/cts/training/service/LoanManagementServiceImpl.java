@@ -1,6 +1,7 @@
 package com.cts.training.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +13,11 @@ import com.cts.training.exception.LoanNotFoundException;
 import com.cts.training.feign.CollateralFeign;
 import com.cts.training.model.CustomerLoan;
 import com.cts.training.model.Loan;
+import com.cts.training.model.LoanApplication;
 import com.cts.training.pojo.CashDeposit;
 import com.cts.training.pojo.RealEstate;
 import com.cts.training.repo.CustomerLoanRepo;
+import com.cts.training.repo.LoanApplicationRepo;
 import com.cts.training.repo.LoanRepo;
 
 import feign.FeignException;
@@ -35,6 +38,9 @@ public class LoanManagementServiceImpl implements LoanManagementService {
 
 	@Autowired
 	private LoanRepo loanRepo;
+
+	@Autowired
+	private LoanApplicationRepo loanApplicationRepo;
 
 	private static final String MESSAGE = "Customer Loan Not found with LoanId: ";
 
@@ -129,5 +135,48 @@ public class LoanManagementServiceImpl implements LoanManagementService {
 				throw new CollateralTypeNotFoundException("Collateral already exists with loan id");
 			}
 		}
+	}
+	@Override
+	public ResponseEntity<LoanApplication> getLoanApplicationStatus(Integer applicationId) throws LoanNotFoundException {
+		Optional<LoanApplication> op = loanApplicationRepo.findById(applicationId);
+		if(op.isPresent()){
+			LoanApplication loanApplication = op.get();
+			return new ResponseEntity<>(loanApplication,HttpStatus.OK);
+		}
+		throw new LoanNotFoundException("Loan Application not found");
+	}
+	@Override
+	public ResponseEntity<String> addLoanApplication(LoanApplication loanApplication)
+	{
+		loanApplicationRepo.save(loanApplication);
+		return new ResponseEntity<>("Loan Application added successfully",HttpStatus.OK);
+	}
+	@Override
+	public ResponseEntity<String> approveLoanApplication(Integer applicationId) throws LoanNotFoundException
+	{
+		Optional<LoanApplication> op = loanApplicationRepo.findById(applicationId);
+		if(op.isPresent())
+		{
+			LoanApplication loanApplication = op.get();
+			loanApplication.setStatus("Approved");
+			loanApplicationRepo.save(loanApplication);
+			return new ResponseEntity<>("Loan Application approved successfully",HttpStatus.OK); 
+		}
+
+		throw new LoanNotFoundException("Loan Application not Found");
+	}
+	@Override
+	public ResponseEntity<String> rejectLoanApplication(Integer applicationId) throws LoanNotFoundException
+	{
+		Optional<LoanApplication> op = loanApplicationRepo.findById(applicationId);
+		if(op.isPresent())
+		{
+			LoanApplication loanApplication = op.get();
+			loanApplication.setStatus("Rejected");
+			loanApplicationRepo.save(loanApplication);
+			return new ResponseEntity<>("Loan Application rejected successfully",HttpStatus.OK); 
+		}
+
+		throw new LoanNotFoundException("Loan Application not Found");
 	}
 }

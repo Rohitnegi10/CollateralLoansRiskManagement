@@ -23,11 +23,6 @@ insert into loan(loan_product_id,loan_product_name,max_loan_eligible,interest_ra
 insert into loan(loan_product_id,loan_product_name,max_loan_eligible,interest_rate,tenure,collateral_type) values(1007,'Home Loan',500000,12,24,'CASH_DEPOSIT');
 insert into loan(loan_product_id,loan_product_name,max_loan_eligible,interest_rate,tenure,collateral_type) values(1008,'Medical Loan',500000,12,24,'CASH_DEPOSIT');
 
- 
-
- 
-
- 
 
 
 insert into customerloan(loan_id,loan_product_id,customer_id,loan_principal,tenure,interest,emi,collateral_id) values(1,1001,100001,6000000,12.5,36,65000,NULL);
@@ -38,3 +33,4 @@ insert into customerloan(loan_id,loan_product_id,customer_id,loan_principal,tenu
 insert into customerloan(loan_id,loan_product_id,customer_id,loan_principal,tenure,interest,emi,collateral_id) values(6,1006,100006,5500000,11.5,34,52000,NULL);
 insert into customerloan(loan_id,loan_product_id,customer_id,loan_principal,tenure,interest,emi,collateral_id) values(7,1007,100007,3300000,12.4,40,36000,NULL);
 insert into customerloan(loan_id,loan_product_id,customer_id,loan_principal,tenure,interest,emi,collateral_id) values(8,1008,100008,3900000,11.5,30,30000,NULL);
+
